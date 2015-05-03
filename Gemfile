@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'locomotivecms_wagon', '1.5.3'
+gem 'locomotivecms_wagon', '1.5.4'
 
 group :development do
   # Mac OS X
