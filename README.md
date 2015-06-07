@@ -8,34 +8,31 @@ Pull this image with `docker pull masm/wagon`.
 
 ## Usage
 
-Running the images starts `wagon serve`.
-You need to expose port 3333.
-You also need to mount a volume with your website on `/app`.
-Run it with something like:
+This image is built to have gems bundled into a docker volume.
 
+First, create a container for using as a volume for bundler data:
 ```
-docker run --rm --expose 3333:3333 --volume `pwd`:/app masm/wagon
+docker create --name wagon-bundle --volume /bundle busybox
 ```
+
+Then run `bundle install` (gems are stored in the volume):
+```
+docker run --rm --volume `pwd`:/app --volumes-from wagon-bundle \
+       --entrypoint bundle masm/wagon install
+```
+
+Finally, serve your wagon site with:
+```
+docker run --rm --publish 3333:3333 --volume `pwd`:/app --volumes-from wagon-bundle masm/wagon
+```
+
+This starts `wagon serve`.  Your site should be available in `localhost:3333`.
 
 Or pass `wagon push` to push your website:
 
 ```
-docker run --rm --expose 3333:3333 --volume `pwd`:/app masm/wagon wagon push
+docker run --rm --volume `pwd`:/app --volume-from wagon-bundle masm/wagon wagon push
 ```
-
-To make sure that it works correctly, you have two options:
- * copy my `Gemfile` and `Gemfile.lock` files to your project's folder;
- * create an image based in this image, thus updating the gems inside the container to be what your project expects.
-
-If you decide to use the second option, you need a Dockerfile like:
-```
-FROM masm/wagon
-ADD Gemfile Gemfile
-ADD Gemfile.lock Gemfile.lock
-RUN bundle install
-```
-(assuming the Dockerfile is in your website's folder):
-
 
 ## License
 
