@@ -17,13 +17,14 @@ docker create --name wagon-bundle --volume /bundle busybox
 
 Then run `bundle install` (gems are stored in the volume):
 ```
-docker run --rm --volume `pwd`:/app --volumes-from wagon-bundle \
-       --entrypoint bundle masm/wagon install
+docker run --rm --entrypoint bundle \
+       --volume `pwd`:/app --volumes-from wagon-bundle masm/wagon install
 ```
 
 Finally, serve your wagon site with:
 ```
-docker run --rm --publish 3333:3333 --volume `pwd`:/app --volumes-from wagon-bundle masm/wagon
+docker run --rm --publish 3333:3333 \
+           --volume `pwd`:/app --volumes-from wagon-bundle masm/wagon
 ```
 
 This starts `wagon serve`.  Your site should be available in `localhost:3333`.

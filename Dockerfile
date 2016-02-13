@@ -1,4 +1,4 @@
-FROM ruby:2.1
+FROM masm/ruby21
 MAINTAINER Marco Monteiro <marco@neniu.org>
 
 CMD ["wagon", "serve"]
